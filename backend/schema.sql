@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS projects (
     cover_image_url TEXT,                            -- 封面图 URL
     global_image_prompt TEXT,                        -- 生成首帧图的全局提示词
     global_video_prompt TEXT,                        -- 生成视频的全局提示词
+    combined_characters_image VARCHAR,               -- 合成角色图片 URL
     project_type VARCHAR(20) DEFAULT 'video',        -- 项目类型: 'video' 或 'comic'
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),  -- 创建时间
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()   -- 更新时间
@@ -88,6 +89,7 @@ CREATE TABLE IF NOT EXISTS composite_videos (
     id SERIAL PRIMARY KEY,                          -- 合成视频唯一标识
     project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE, -- 关联的项目ID
     video_url TEXT NOT NULL,                        -- 合成视频 URL
+    scene_count INTEGER NOT NULL DEFAULT 0,         -- 场景计数
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()   -- 创建时间
 );
 
@@ -108,9 +110,7 @@ CREATE TABLE IF NOT EXISTS characters (
     derived_from UUID REFERENCES characters(id),    -- 衍生来源角色ID
     source_project_id UUID REFERENCES projects(id), -- 来源项目ID（如果从项目创建）
     created_at TIMESTAMPTZ DEFAULT NOW(),           -- 创建时间
-    updated_at TIMESTAMPTZ DEFAULT NOW(),           -- 更新时间（用于缓存破坏）
-    CONSTRAINT system_characters_pkey PRIMARY KEY (id),
-    CONSTRAINT system_characters_source_project_id_fkey FOREIGN KEY (source_project_id) REFERENCES projects(id)
+    updated_at TIMESTAMPTZ DEFAULT NOW()            -- 更新时间（用于缓存破坏）
 );
 
 -- 项目角色关联表
@@ -140,13 +140,33 @@ CREATE INDEX IF NOT EXISTS idx_storyboard_project_id ON storyboard_scenes(projec
 CREATE INDEX IF NOT EXISTS idx_history_scene_id ON generation_history(scene_id);
 CREATE INDEX IF NOT EXISTS idx_history_scene_type ON generation_history(scene_id, generation_type);
 CREATE INDEX IF NOT EXISTS idx_composite_project_id ON composite_videos(project_id);
+CREATE INDEX IF NOT EXISTS idx_composite_videos_created_at ON composite_videos(created_at DESC);
 
 -- 角色管理模块索引
 CREATE INDEX IF NOT EXISTS idx_characters_created_at ON characters(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_characters_updated_at ON characters(updated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_characters_name ON characters(name);
+CREATE INDEX IF NOT EXISTS idx_characters_category ON characters(category);
 CREATE INDEX IF NOT EXISTS idx_project_characters_project_id ON project_characters(project_id);
 CREATE INDEX IF NOT EXISTS idx_project_characters_order ON project_characters(project_id, display_order);
+
+-- ========================================
+-- 4. 文件上传模块
+-- ========================================
+
+-- 已上传文件表
+-- 存储已上传到 Cloudflare 的文件记录，用于去重
+CREATE TABLE IF NOT EXISTS uploaded_files (
+    id SERIAL PRIMARY KEY,                          -- 文件唯一标识
+    file_hash VARCHAR(64) NOT NULL UNIQUE,          -- 文件哈希值
+    cloudflare_url TEXT NOT NULL,                   -- Cloudflare 存储 URL
+    file_type VARCHAR(20) NOT NULL,                 -- 文件类型
+    file_size_bytes BIGINT NOT NULL,                -- 文件大小（字节）
+    created_at TIMESTAMPTZ DEFAULT NOW()            -- 创建时间
+);
+
+-- 文件上传模块索引
+CREATE INDEX IF NOT EXISTS idx_uploaded_files_hash ON uploaded_files(file_hash);
 
 -- ========================================
 -- 注释说明
@@ -160,3 +180,4 @@ COMMENT ON TABLE generation_history IS '图片/视频生成历史记录表';
 COMMENT ON TABLE composite_videos IS '合成视频记录表';
 COMMENT ON TABLE characters IS '统一角色库表';
 COMMENT ON TABLE project_characters IS '项目角色关联表';
+COMMENT ON TABLE uploaded_files IS '已上传文件记录表';
